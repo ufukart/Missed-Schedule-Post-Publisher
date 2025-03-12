@@ -1,46 +1,89 @@
 === Missed Schedule Post Publisher ===
 Contributors: ufukart
-Donate link: https://donate.stripe.com/7sIcQlbaR4rc7qobII
-Tags: schedule, missed schedule, cron, scheduled posts, trigger, scheduled post, missed scheduled posts
+Donate link: https://www.paypal.com/donate/?business=53EHQKQ3T87J8&no_recurring=0&currency_code=USD
+Tags: schedule, missed schedule, trigger, scheduled post, missed scheduled posts
 Requires at least: 5.0
-Tested up to: 6.1.1
+Tested up to: 6.7.2
 Requires PHP: 5.6
-Stable tag: 1.0.3
+Stable tag: 1.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Checks to see if any scheduled posts have been missed. If so, it publishes them. Choose run time and forget it.
+Automatically detects and publishes missed scheduled posts. Set your preferred run time and let it handle the rest.
 
 == Description ==
 = WordPress Missed Scheduled Posts Publisher =
 
-Checks to see if any scheduled posts have been missed. If so, it publishes them. Choose run time and forget it.
+Never miss a scheduled post again! This plugin ensures your scheduled posts are published on time, even on low-traffic websites.
 
-This plugin provides a reliable way of scheduling posts on low-traffic sites where the standard method isn't always accurate due to low visitor numbers and / or high update frequency.
+== Why Use This Plugin? ==
+By default, WordPress relies on visitor activity to trigger scheduled posts. If your site has low traffic or long gaps between visits, some posts may end up with a "Missed Schedule" status instead of being published.
 
-The default Wordpress method of scheduling posts is to check if something's waiting to be published each time a visitor comes to the site, but if enough time has passed between visitors then items in the queue can get 'stale' and are flagged as 'missed schedule' instead of being published.
+Missed Scheduled Posts Publisher runs automatically at your chosen interval, ensuring all scheduled posts go live as expected—without requiring manual intervention.
 
-Do you have a web site or blog with a small number of daily visitors?
+== Key Features: ==
+✅ Automatically publishes missed scheduled posts
+✅ Customizable execution time—set it and forget it
+✅ Ideal for low-traffic blogs and websites
+✅ Lightweight—won’t impact bandwidth or analytics
 
-This plugin provides a simple and effective way of scheduling post updates when the standard Wordpress mechanism isn't enough.
-
-It's very simple to use, doesn't impact bandwidth or analytics.
+Simply install, configure, and let the plugin handle the rest! 🚀
 
 == Installation ==
-1. Go to Plugins, Add New, Upload Plugin.
-2. Upload the ZIP file.
-3. Activate the plugin through the 'Plugins' screen in WordPress
-4. Go Missed Schedule menu and choose run time.
+= Download & Install: =
+1. Go to Plugins > Add New in your WordPress dashboard.
+2. Search for "Missed Scheduled Posts Publisher" or upload the plugin ZIP file manually.
+3. Click Install Now, then Activate the plugin.
+= Configure Settings: =
+4. Navigate to Settings > Missed Schedule Post Publisher.
+5. Choose how often the plugin should check for missed posts (5, 10, 15, 20, 30, or 60 minutes).
+6. Click Save Settings.
+= That’s it! =
+The plugin will now automatically check and publish any missed scheduled posts.
+You can update the settings anytime from the plugin settings page.
 
 
 == Frequently Asked Questions ==
 
-= How often does it check missed posts? =
+= What does this plugin do? =
+This plugin detects and automatically publishes scheduled posts that WordPress failed to publish due to the "Missed Schedule" issue.
 
-Choose run time on missed schedule menu.
+= Why do scheduled posts sometimes fail to publish? =
+WordPress relies on site visits to trigger scheduled tasks. If there’s low traffic or long gaps between visits, scheduled posts may be missed. This plugin ensures posts are published on time by running at a set interval.
+
+= How often does the plugin check for missed posts? =
+You can set the execution interval from the plugin settings. Options include 5, 10, 15, 20, 30, or 60 minutes.
+
+= Does this plugin slow down my website? =
+No. The plugin is lightweight and only runs a quick database check at the defined interval. It does not affect site performance or analytics.
+
+= Does it work with custom post types? =
+Currently, the plugin only checks and publishes standard WordPress posts (post post type). Future updates may include support for custom post types.
+
+= Can I use this plugin on a high-traffic website? =
+Yes, but it is primarily designed for low-traffic websites where WordPress’s default scheduling system may fail.
+
+= How do I configure the plugin? =
+Go to Settings > Missed Schedule Post Publisher, choose your preferred interval, and save. That’s it! The plugin will take care of the rest.
+
+= Does this plugin require WP-Cron? =
+No, it does not rely on WP-Cron. Instead, it triggers based on visitor activity, ensuring missed posts are checked and published when a user visits your site.
+
+= Is this plugin compatible with caching plugins? =
+Yes. However, if your caching plugin aggressively caches pages, ensure that database queries are not cached, so the plugin can detect missed posts in real-time.
+
+= What should I do if the plugin isn’t working? =
+* Ensure your scheduled posts have a "Missed Schedule" status.
+* Check the plugin settings to confirm the execution time.
+* Disable any conflicting plugins that may interfere with post publishing.
+* If the issue persists, try deactivating and reactivating the plugin.
 
 
 == Changelog ==
+
+= 1.0.4 =
+* Add Settings shortcut to plugins page
+* Added donate link
 
 = 1.0.3 =
 * Fully compatible with PHP 5.6 and above. Tested up to: PHP 8.2

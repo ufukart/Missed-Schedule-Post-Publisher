@@ -3,9 +3,9 @@
 	Plugin Name: Missed Schedule Post Publisher
 	Description: This plugin publish missed scheduled posts.
 	Plugin URI: http://www.ubilisim.com/missed-schedule-post-publisher-wordpress-plugin/
-	Version: 1.0.3
+	Version: 1.0.4
 	Author: UfukArt
-	Author URI: http://www.ubilisim.com
+	Author URI: https://www.zumbo.net
 	Text Domain: missed-schedule-post-publisher
 	Domain Path: /languages/
 	License: GPL2
@@ -14,14 +14,14 @@
 // Security
 defined( 'ABSPATH' ) or exit;
 
-// Add to db Default execute time, last executed time plugin activated
+// Add to db Default execute time and last executed time while plugin activated
 function mspp_execute_time_first_add() {
 	update_option('mspp_execute_time', 20);
 	update_option('mspp_last_execute_time', time());
 }
 register_activation_hook( __FILE__, 'mspp_execute_time_first_add' );
 
-// Delete from db Default execute time, last executed time plugin deactivated
+// Delete from db Default execute time and last executed time while plugin deactivated
 function mspp_execute_time_delete() {
 	delete_option('mspp_execute_time');
 	delete_option('mspp_last_execute_time');
@@ -63,7 +63,7 @@ function missed_schedule_post_publisher_manage() {
 	if(isset($_POST["action"]) && $_POST["action"]=="update"){
 		// Wp_nonce check
 		if (!isset($_POST['missed_schedule_post_publisher_update']) || ! wp_verify_nonce( $_POST['missed_schedule_post_publisher_update'], 'missed_schedule_post_publisher_update' ) ) {
-			exit('Sorry, you do not have access to this page! https://www.ubilisim.com/missed-schedule-post-publisher-wordpress-plugin/');
+			wp_die('Sorry, you do not have access to this page!');
 		}else{
 			$mspp_execute_time = sanitize_text_field($_POST['mspp_execute_time']);
 			update_option('mspp_execute_time', $mspp_execute_time);
