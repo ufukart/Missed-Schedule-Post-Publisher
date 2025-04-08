@@ -3,9 +3,9 @@ Contributors: ufukart
 Donate link: https://www.paypal.com/donate/?business=53EHQKQ3T87J8&no_recurring=0&currency_code=USD
 Tags: schedule, missed schedule, trigger, scheduled post, missed scheduled posts
 Requires at least: 5.0
-Tested up to: 6.7.2
+Tested up to: 6.8
 Requires PHP: 5.6
-Stable tag: 1.0.4
+Stable tag: 1.0.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,12 +32,12 @@ Simply install, configure, and let the plugin handle the rest! 🚀
 == Installation ==
 = Download & Install: =
 1. Go to Plugins > Add New in your WordPress dashboard.
-2. Search for "Missed Scheduled Posts Publisher" or upload the plugin ZIP file manually.
-3. Click Install Now, then Activate the plugin.
+1. Search for "Missed Scheduled Posts Publisher" or upload the plugin ZIP file manually.
+1. Click Install Now, then Activate the plugin.
 = Configure Settings: =
-4. Navigate to Settings > Missed Schedule Post Publisher.
-5. Choose how often the plugin should check for missed posts (5, 10, 15, 20, 30, or 60 minutes).
-6. Click Save Settings.
+1. Navigate to Settings > Missed Schedule Post Publisher.
+1. Choose how often the plugin should check for missed posts (5, 10, 15, 20, 30, or 60 minutes).
+1. Click Save Settings.
 = That’s it! =
 The plugin will now automatically check and publish any missed scheduled posts.
 You can update the settings anytime from the plugin settings page.
@@ -81,20 +81,44 @@ Yes. However, if your caching plugin aggressively caches pages, ensure that data
 
 == Changelog ==
 
+= 1.0.5 =
+### Major Improvements
+- Complete code refactoring using OOP architecture
+- Enhanced security with proper input sanitization and nonce verification
+- Implemented WordPress cron integration for reliable scheduling
+- Added full internationalization support (i18n)
+- Improved admin interface with better user feedback
+- Tested up to PHP 8.4
+
+### Security
+- Fixed potential SQL injection vulnerability using `$wpdb->prepare()`
+- Added capability checks for admin operations
+- Strengthened nonce verification process
+
+### Performance
+- Optimized database queries for checking scheduled posts
+- Reduced unnecessary hook registrations
+- Improved memory usage with better variable handling
+
+### Bug Fixes
+- Fixed timezone handling for post scheduling
+- Resolved potential race conditions in post publishing
+- Fixed admin notice display issues
+
 = 1.0.4 =
-* Add Settings shortcut to plugins page
-* Added donate link
+- Add Settings shortcut to plugins page
+- Added donate link
 
 = 1.0.3 =
-* Fully compatible with PHP 5.6 and above. Tested up to: PHP 8.2
-* Few minor improvements
+- Fully compatible with PHP 5.6 and above. Tested up to: PHP 8.2
+- Few minor improvements
 
 = 1.0.2 =
-* Bug Fixed. (Undefined Index Warning)
+- Bug Fixed. (Undefined Index Warning)
 
 = 1.0.1 =
-* Removed from Toolbar Menu
-* Menu moved under the setting
+- Removed from Toolbar Menu
+- Menu moved under the setting
 
 = 1.0 =
-* Initial release
+- Initial release

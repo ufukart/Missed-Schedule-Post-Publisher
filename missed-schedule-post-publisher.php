@@ -1,112 +1,173 @@
 <?php
 /*
-	Plugin Name: Missed Schedule Post Publisher
-	Description: This plugin publish missed scheduled posts.
-	Plugin URI: http://www.ubilisim.com/missed-schedule-post-publisher-wordpress-plugin/
-	Version: 1.0.4
-	Author: UfukArt
-	Author URI: https://www.zumbo.net
-	Text Domain: missed-schedule-post-publisher
-	Domain Path: /languages/
-	License: GPL2
-*/
+ * Plugin Name: Missed Schedule Post Publisher
+ * Description: Publishes missed scheduled posts automatically.
+ * Plugin URI: https://www.zumbo.net/missed-schedule-post-publisher-wordpress-plugin/
+ * Version: 1.0.5
+ * Author: UfukArt
+ * Author URI: https://www.zumbo.net
+ * Text Domain: missed-schedule-post-publisher
+ * Domain Path: /languages/
+ * License: GPL2
+ */
+namespace MissedSchedulePostPublisher;
 
-// Security
-defined( 'ABSPATH' ) or exit;
+defined('ABSPATH') || exit;
 
-// Add to db Default execute time and last executed time while plugin activated
-function mspp_execute_time_first_add() {
-	update_option('mspp_execute_time', 20);
-	update_option('mspp_last_execute_time', time());
-}
-register_activation_hook( __FILE__, 'mspp_execute_time_first_add' );
+if (!class_exists(__NAMESPACE__ . '\Missed_Schedule_Post_Publisher')) {
 
-// Delete from db Default execute time and last executed time while plugin deactivated
-function mspp_execute_time_delete() {
-	delete_option('mspp_execute_time');
-	delete_option('mspp_last_execute_time');
-}
-register_deactivation_hook( __FILE__, 'mspp_execute_time_delete' );
+    class Missed_Schedule_Post_Publisher {
 
-// Add Menu To WordPress
-function missed_schedule_post_publisher_menu() {
-	add_options_page('Missed Schedule Post Publisher','Missed Schedule', 'manage_options', 'missed-schedule-post-publisher', 'missed_schedule_post_publisher_manage');
-}
-add_action('admin_menu', 'missed_schedule_post_publisher_menu');
+        const OPTION_EXECUTE_TIME = 'mspp_execute_time';
+        const OPTION_LAST_EXECUTE = 'mspp_last_execute_time';
+        const DEFAULT_INTERVAL = 20;
 
-// // Add Menu To Toolbar
-// add_action( 'admin_bar_menu', 'mspp_toolbar_menu', 999 );
+        public function __construct() {
+            register_activation_hook(__FILE__, [$this, 'activate']);
+            register_deactivation_hook(__FILE__, [$this, 'deactivate']);
 
-// function mspp_toolbar_menu( $wp_admin_bar ) {
-// 	$args = array(
-// 		'id'    => 'MSPP',
-// 		'title' => 'Missed Schedule Post Publisher',
-// 		'href'  => admin_url() . 'admin.php?page=missed-schedule-post-publisher',
-// 	);
-// 	$wp_admin_bar->add_node( $args );
-// 	$args = array(
-// 		'id'    => 'MSPP_LEXE',
-// 		'title' => '<span class="ab-icon"></span><span class="ab-label">Plugin Running Every ' . get_option("mspp_execute_time") . ' Minutes</span>',
-// 		'parent' => 'MSPP'
-// 	);
-// 	$wp_admin_bar->add_node( $args );
-// 	$args = array(
-// 		'id'    => 'MSPP_LET',
-// 		'title' => '<span class="ab-icon"></span><span class="ab-label">Last Executed Time (GMT): ' . gmdate('Y-m-d H:i:00', get_option('mspp_last_execute_time')) . '</span>',
-// 		'parent' => 'MSPP'
-// 	);
-// 	$wp_admin_bar->add_node( $args );
-// }
+            add_action('admin_menu', [$this, 'add_admin_menu']);
+            add_action('mspp_check_posts', [$this, 'publish_missed_posts']);
 
-// Plugin Management Page
-function missed_schedule_post_publisher_manage() {
-	if(isset($_POST["action"]) && $_POST["action"]=="update"){
-		// Wp_nonce check
-		if (!isset($_POST['missed_schedule_post_publisher_update']) || ! wp_verify_nonce( $_POST['missed_schedule_post_publisher_update'], 'missed_schedule_post_publisher_update' ) ) {
-			wp_die('Sorry, you do not have access to this page!');
-		}else{
-			$mspp_execute_time = sanitize_text_field($_POST['mspp_execute_time']);
-			update_option('mspp_execute_time', $mspp_execute_time);
-			//echo'<div class="updated"><p><strong>Settings Saved.</strong></p></div>';
-            echo '<div id="setting-error-settings_updated" class="notice notice-success settings-error is-dismissible"> 
-<p><strong>Settings saved.</strong></p></div>';
-		}
-	}
-?>
-<h1 class="wp-heading-inline">Missed Schedule Post Publisher</h1>
-<p>Running every <strong><?php echo get_option("mspp_execute_time");?></strong> minutes. Last run time (GMT): <?php echo gmdate("Y-m-d H:i:00", get_option("mspp_last_execute_time"));?></p>
-<form method="post">
-	Run Every <select name="mspp_execute_time" id="mspp_execute_time" required>
-		<option value="5">5 Minutes</option>
-		<option value="10">10 Minutes</option>
-		<option value="15">15 Minutes</option>
-		<option value="20" selected>20 Minutes (Recommended)</option>
-		<option value="30">30 Minutes</option>
-		<option value="60">Every Hour</option>
-	</select>
-	<input type="hidden" name="action" value="update">
-<?php wp_nonce_field('missed_schedule_post_publisher_update','missed_schedule_post_publisher_update');?>
-	<input type="submit" value="Update">
-</form>
-<?php
-}
+            // Custom interval filter
+            add_filter('cron_schedules', [$this, 'add_custom_cron_interval']);
+        }
 
-function pubMissedPosts() {
-	if (is_front_page() || is_single()) {
-		global $wpdb;
-		$now = gmdate("Y-m-d H:i:00");
-		$sql = "Select ID from $wpdb->posts where post_status='future' and post_date_gmt<='$now'";
-		$resulto = $wpdb->get_results($sql);
-		if($resulto) {
-			foreach( $resulto as $thisarr ) {
-				wp_publish_post($thisarr->ID);
-			}
-		}
-	}
-}
+        public function activate() {
+            update_option(self::OPTION_EXECUTE_TIME, self::DEFAULT_INTERVAL);
+            update_option(self::OPTION_LAST_EXECUTE, time());
 
-// if conditions provided, check and publish missed schedule future posts.
-if(time() >= get_option("mspp_last_execute_time") + (60 * get_option("mspp_execute_time"))) {
-	add_action('wp_head', 'pubMissedPosts');
-	update_option('mspp_last_execute_time', time());
+            if (!wp_next_scheduled('mspp_check_posts')) {
+                wp_schedule_event(time(), 'mspp_custom_interval', 'mspp_check_posts');
+            }
+        }
+
+        public function deactivate() {
+            wp_clear_scheduled_hook('mspp_check_posts');
+            delete_option(self::OPTION_EXECUTE_TIME);
+            delete_option(self::OPTION_LAST_EXECUTE);
+        }
+
+        public function add_custom_cron_interval($schedules) {
+            $interval = get_option(self::OPTION_EXECUTE_TIME, self::DEFAULT_INTERVAL);
+
+            $schedules['mspp_custom_interval'] = [
+                'interval' => $interval * 60,
+                'display' => sprintf(__('Every %d Minutes (MSPP)', 'missed-schedule-post-publisher'), $interval)
+            ];
+
+            return $schedules;
+        }
+
+        public function add_admin_menu() {
+            add_options_page(
+                __('Missed Schedule Post Publisher', 'missed-schedule-post-publisher'),
+                __('Missed Schedule', 'missed-schedule-post-publisher'),
+                'manage_options',
+                'missed-schedule-post-publisher',
+                [$this, 'render_admin_page']
+            );
+        }
+
+        public function render_admin_page() {
+            if (!current_user_can('manage_options')) {
+                wp_die(__('You do not have sufficient permissions to access this page.', 'missed-schedule-post-publisher'));
+            }
+
+            if (isset($_POST['action']) && 'update' === $_POST['action']) {
+                $this->handle_settings_update();
+            }
+
+            $current_interval = get_option(self::OPTION_EXECUTE_TIME, self::DEFAULT_INTERVAL);
+            $last_run = get_option(self::OPTION_LAST_EXECUTE, time());
+            ?>
+            <div class="wrap">
+                <h1 class="wp-heading-inline"><?php esc_html_e('Missed Schedule Post Publisher', 'missed-schedule-post-publisher'); ?></h1>
+                <p>
+                    <?php
+                    printf(
+                        __('Running every <strong>%d</strong> minutes. Last run time (GMT): %s', 'missed-schedule-post-publisher'),
+                        $current_interval,
+                        gmdate('Y-m-d H:i:00', $last_run)
+                    );
+                    ?>
+                </p>
+                <form method="post">
+                    <?php wp_nonce_field('mspp_settings_update', 'mspp_nonce'); ?>
+                    <label for="mspp_execute_time">
+                        <?php esc_html_e('Run Every', 'missed-schedule-post-publisher'); ?>
+                        <select name="mspp_execute_time" id="mspp_execute_time" required>
+                            <?php $this->render_interval_options($current_interval); ?>
+                        </select>
+                    </label>
+                    <input type="hidden" name="action" value="update">
+                    <?php submit_button(__('Update', 'missed-schedule-post-publisher')); ?>
+                </form>
+            </div>
+            <?php
+        }
+
+        private function render_interval_options($selected) {
+            $intervals = [
+                5  => __('5 Minutes', 'missed-schedule-post-publisher'),
+                10 => __('10 Minutes', 'missed-schedule-post-publisher'),
+                15 => __('15 Minutes', 'missed-schedule-post-publisher'),
+                20 => __('20 Minutes (Recommended)', 'missed-schedule-post-publisher'),
+                30 => __('30 Minutes', 'missed-schedule-post-publisher'),
+                60 => __('Every Hour', 'missed-schedule-post-publisher'),
+            ];
+
+            foreach ($intervals as $value => $label) {
+                printf(
+                    '<option value="%d" %s>%s</option>',
+                    $value,
+                    selected($value, $selected, false),
+                    esc_html($label)
+                );
+            }
+        }
+
+        private function handle_settings_update() {
+            if (!isset($_POST['mspp_nonce']) || !wp_verify_nonce($_POST['mspp_nonce'], 'mspp_settings_update')) {
+                wp_die(__('Security check failed', 'missed-schedule-post-publisher'));
+            }
+
+            if (isset($_POST['mspp_execute_time'])) {
+                $interval = absint($_POST['mspp_execute_time']);
+                if ($interval > 0) {
+                    update_option(self::OPTION_EXECUTE_TIME, $interval);
+                    wp_clear_scheduled_hook('mspp_check_posts');
+                    wp_schedule_event(time(), 'mspp_custom_interval', 'mspp_check_posts');
+
+                    add_settings_error(
+                        'mspp_messages',
+                        'mspp_message',
+                        __('Settings Saved', 'missed-schedule-post-publisher'),
+                        'updated'
+                    );
+                }
+            }
+        }
+
+        public function publish_missed_posts() {
+            global $wpdb;
+
+            $now = current_time('mysql', 1);
+            $post_ids = $wpdb->get_col($wpdb->prepare(
+                "SELECT ID FROM $wpdb->posts WHERE post_status = 'future' AND post_date_gmt <= %s",
+                $now
+            ));
+
+            if (!empty($post_ids)) {
+                foreach ($post_ids as $post_id) {
+                    wp_publish_post($post_id);
+                }
+                update_option(self::OPTION_LAST_EXECUTE, time());
+            }
+        }
+    }
+
+    add_action('plugins_loaded', function() {
+        new Missed_Schedule_Post_Publisher();
+    });
 }
