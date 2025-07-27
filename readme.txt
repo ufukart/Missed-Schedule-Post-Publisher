@@ -1,6 +1,6 @@
 === Missed Schedule Post Publisher ===
 Contributors: ufukart
-Donate link: https://www.paypal.com/donate/?business=53EHQKQ3T87J8&no_recurring=0&currency_code=USD
+[![Donate](https://img.shields.io/badge/Donate-PayPal-blue.svg)](https://www.paypal.com/donate/?business=53EHQKQ3T87J8&no_recurring=0&currency_code=USD)
 Tags: schedule, missed schedule, trigger, scheduled post, missed scheduled posts
 Requires at least: 5.0
 Tested up to: 6.8
