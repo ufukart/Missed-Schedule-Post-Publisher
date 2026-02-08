@@ -4,6 +4,8 @@
 ![WordPress Compatibility](https://img.shields.io/badge/wordpress-5.0%2B-brightgreen.svg)
 ![PHP Compatibility](https://img.shields.io/badge/php-7.0%2B-purple.svg)
 ![License](https://img.shields.io/badge/license-GPLv2-red.svg)
+[![WP compatibility](https://plugintests.com/plugins/wporg/missed-schedule-post-publisher/wp-badge.svg)](https://plugintests.com/plugins/wporg/missed-schedule-post-publisher/latest)
+[![PHP compatibility](https://plugintests.com/plugins/wporg/missed-schedule-post-publisher/php-badge.svg)](https://plugintests.com/plugins/wporg/missed-schedule-post-publisher/latest)
 
 🎯 Never miss scheduled posts again! Automatically detects and publishes missed scheduled posts on time, every time - perfect for low-traffic websites.
 
