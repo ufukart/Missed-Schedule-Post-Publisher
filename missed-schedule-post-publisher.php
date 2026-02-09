@@ -3,7 +3,7 @@
  * Plugin Name: Missed Schedule Post Publisher
  * Description: Publishes missed scheduled posts automatically.
  * Plugin URI: https://www.zumbo.net/missed-schedule-post-publisher-wordpress-plugin/
- * Version: 2.1
+ * Version: 2.2
  * Author: UfukArt
  * Author URI: https://www.zumbo.net
  * Text Domain: missed-schedule-post-publisher
@@ -27,14 +27,38 @@ final class Missed_Schedule_Post_Publisher {
     public function __construct() {
         add_action('init', [$this, 'load_textdomain']);
 
-        register_activation_hook(__FILE__, [$this, 'activate']);
-        register_deactivation_hook(__FILE__, [$this, 'deactivate']);
-
         add_filter('cron_schedules', [$this, 'register_cron_interval']);
         add_action(self::CRON_HOOK, [$this, 'publish_missed_posts']);
 
         add_action('admin_menu', [$this, 'add_admin_menu']);
         add_action('admin_init', [$this, 'failsafe_cron']);
+    }
+
+    public static function activate() {
+
+        if ( false === get_option( self::OPTION_EXECUTE_TIME ) ) {
+            add_option( self::OPTION_EXECUTE_TIME, self::DEFAULT_INTERVAL );
+        }
+
+        if ( false === get_option( self::OPTION_LAST_EXECUTE ) ) {
+            add_option( self::OPTION_LAST_EXECUTE, time() );
+        }
+
+        wp_clear_scheduled_hook( self::CRON_HOOK );
+
+        if ( ! wp_next_scheduled( self::CRON_HOOK ) ) {
+            wp_schedule_event(
+                time() + 60,
+                self::CRON_INTERVAL_KEY,
+                self::CRON_HOOK
+            );
+        }
+    }
+
+    public static function deactivate() {
+        wp_clear_scheduled_hook( self::CRON_HOOK );
+        delete_option( self::OPTION_EXECUTE_TIME );
+        delete_option( self::OPTION_LAST_EXECUTE );
     }
 
     /* -------------------------------------------------------------------------
@@ -47,27 +71,6 @@ final class Missed_Schedule_Post_Publisher {
             false,
             dirname(plugin_basename(__FILE__)) . '/languages'
         );
-    }
-
-    /* -------------------------------------------------------------------------
-     * Activation / Deactivation
-     * ---------------------------------------------------------------------- */
-
-    public function activate() {
-        update_option(self::OPTION_EXECUTE_TIME, self::DEFAULT_INTERVAL);
-        update_option(self::OPTION_LAST_EXECUTE, time());
-
-        wp_clear_scheduled_hook(self::CRON_HOOK);
-        
-        wp_schedule_event(
-            time() + 60,
-            self::CRON_INTERVAL_KEY,
-            self::CRON_HOOK
-        );
-    }
-
-    public function deactivate() {
-        wp_clear_scheduled_hook(self::CRON_HOOK);
     }
 
     /* -------------------------------------------------------------------------
@@ -174,6 +177,9 @@ final class Missed_Schedule_Post_Publisher {
         }
 
         if (isset($_POST['action']) && $_POST['action'] === 'update') {
+            if (!isset($_POST['mspp_nonce']) || !wp_verify_nonce($_POST['mspp_nonce'], 'mspp_settings_update')) {
+               wp_die(__('Security check failed', 'missed-schedule-post-publisher'));
+            }
             $this->handle_settings_update();
         }
 
@@ -304,6 +310,16 @@ final class Missed_Schedule_Post_Publisher {
         );
     }
 }
+
+register_activation_hook(
+    __FILE__,
+    ['MissedSchedulePostPublisher\Missed_Schedule_Post_Publisher', 'activate']
+);
+
+register_deactivation_hook(
+    __FILE__,
+    ['MissedSchedulePostPublisher\Missed_Schedule_Post_Publisher', 'deactivate']
+);
 
 add_action('plugins_loaded', static function () {
     new Missed_Schedule_Post_Publisher();

@@ -5,7 +5,7 @@ Tags: schedule, missed schedule, trigger, missed scheduled post, cron
 Requires at least: 5.3
 Tested up to: 6.9.1
 Requires PHP: 7.0
-Stable tag: 2.1
+Stable tag: 2.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -220,6 +220,18 @@ For support, feature requests, or bug reports, please visit the [WordPress.org s
 ---
 
 == Changelog ==
+
+= 2.2 =
+
+🔧 Improvements
+Fixed plugin activation and deactivation logic to fully comply with WordPress standards.
+Moved register_activation_hook and register_deactivation_hook outside the constructor and bound them using static class methods for deterministic behavior.
+Ensured default plugin options are created on activation, even if the admin page is never visited.
+Improved cron scheduling reliability by preventing duplicate or missing cron events.
+
+🧹 Cleanup
+Plugin options are now cleanly removed on deactivation, leaving no residual data in the database.
+Improved cron cleanup to ensure no orphaned scheduled events remain after deactivation.
 
 = 2.1 =
 🔒 Security
