@@ -1,6 +1,6 @@
 # Missed Schedule Post Publisher
 
-![WordPress Plugin Version](https://img.shields.io/badge/version-2.1-blue.svg)
+![WordPress Plugin Version](https://img.shields.io/badge/version-2.2-blue.svg)
 ![WordPress Compatibility](https://img.shields.io/badge/wordpress-5.3%2B-brightgreen.svg)
 ![PHP Compatibility](https://img.shields.io/badge/php-7.0%2B-purple.svg)
 ![License](https://img.shields.io/badge/license-GPLv2-red.svg)
