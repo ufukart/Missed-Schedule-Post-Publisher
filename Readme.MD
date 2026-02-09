@@ -1,7 +1,7 @@
 # Missed Schedule Post Publisher
 
-![WordPress Plugin Version](https://img.shields.io/badge/version-2.0-blue.svg)
-![WordPress Compatibility](https://img.shields.io/badge/wordpress-5.0%2B-brightgreen.svg)
+![WordPress Plugin Version](https://img.shields.io/badge/version-2.1-blue.svg)
+![WordPress Compatibility](https://img.shields.io/badge/wordpress-5.3%2B-brightgreen.svg)
 ![PHP Compatibility](https://img.shields.io/badge/php-7.0%2B-purple.svg)
 ![License](https://img.shields.io/badge/license-GPLv2-red.svg)
 [![WP compatibility](https://plugintests.com/plugins/wporg/missed-schedule-post-publisher/wp-badge.svg)](https://plugintests.com/plugins/wporg/missed-schedule-post-publisher/latest)
@@ -219,6 +219,20 @@ For support, feature requests, or bug reports, please visit the [WordPress.org s
 ---
 
 ## 📝 Changelog
+
+### 2.1
+* **🔒 Security**
+Fixed a security issue where admin settings could be updated before capability checks.
+Capability (manage_options) validation is now performed before processing POST requests.
+Added additional hardening to prevent unauthorized settings updates.
+
+* **⏰ Bug Fixes**
+Fixed an incorrect timezone calculation that caused double GMT offset conversion in admin UI.
+Replaced manual date offset logic with WordPress-native time handling for accurate timezone and DST support.
+
+* **🧩 Improvements**
+Improved admin page logic for safer and more predictable settings handling.
+Internal code cleanup to better align with WordPress coding and security best practices.
 
 ### 2.0
 * **New:** Added support for all public Custom Post Types (CPT), WooCommerce products, and Events.
