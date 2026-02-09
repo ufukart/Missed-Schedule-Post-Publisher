@@ -6,6 +6,11 @@
 ![License](https://img.shields.io/badge/license-GPLv2-red.svg)
 [![WP compatibility](https://plugintests.com/plugins/wporg/missed-schedule-post-publisher/wp-badge.svg)](https://plugintests.com/plugins/wporg/missed-schedule-post-publisher/latest)
 [![PHP compatibility](https://plugintests.com/plugins/wporg/missed-schedule-post-publisher/php-badge.svg)](https://plugintests.com/plugins/wporg/missed-schedule-post-publisher/latest)
+[![Update Status](https://img.shields.io/badge/Status-Actively%20Maintained-green.svg)](https://github.com/ufukart/Missed-Schedule-Post-Publisher)
+[![Last Updated](https://img.shields.io/github/last-commit/ufukart/DNS-Lookup-API)](https://github.com/ufukart/Missed-Schedule-Post-Publisher/commits/main)
+![GitHub repo size](https://github.com/ufukart/Missed-Schedule-Post-Publisher)
+![Visitors](https://api.visitorbadge.io/api/visitors?path=https://github.com/ufukart/Missed-Schedule-Post-Publisher%2F&label=HITS&countColor=%23263759&style=flat)
+[![Donate](https://img.shields.io/badge/Donate-PayPal-blue.svg)](https://www.paypal.com/donate/?business=53EHQKQ3T87J8&no_recurring=0&currency_code=USD)
 
 🎯 Never miss scheduled posts again! Automatically detects and publishes missed scheduled posts on time, every time - perfect for low-traffic websites.
 
