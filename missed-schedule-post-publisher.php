@@ -3,7 +3,7 @@
  * Plugin Name: Missed Schedule Post Publisher
  * Description: Publishes missed scheduled posts automatically.
  * Plugin URI: https://www.zumbo.net/missed-schedule-post-publisher-wordpress-plugin/
- * Version: 2.0
+ * Version: 2.1
  * Author: UfukArt
  * Author URI: https://www.zumbo.net
  * Text Domain: missed-schedule-post-publisher
@@ -206,7 +206,7 @@ final class Missed_Schedule_Post_Publisher {
                         if ($last_run > 0) {
                             printf(
                                 esc_html__('Last check run (Local Time): %s', 'missed-schedule-post-publisher'),
-                                date_i18n(get_option('date_format') . ' ' . get_option('time_format'), $last_run + (get_option('gmt_offset') * 3600))
+                                wp_date(get_option('date_format') . ' ' . get_option('time_format'), $last_run)
                             );
                         } else {
                             esc_html_e('Last check run: Never', 'missed-schedule-post-publisher');
@@ -217,7 +217,7 @@ final class Missed_Schedule_Post_Publisher {
                         <?php if ($next_run): ?>
                             <?php printf(
                                 esc_html__('Next scheduled run (Local Time): %s', 'missed-schedule-post-publisher'),
-                                date_i18n(get_option('date_format') . ' ' . get_option('time_format'), $next_run + (get_option('gmt_offset') * 3600))
+                                wp_date(get_option('date_format') . ' ' . get_option('time_format'), $next_run)
                             ); ?>
                         <?php else: ?>
                             <span style="color: red;"><?php esc_html_e('Cron is not scheduled!', 'missed-schedule-post-publisher'); ?></span>
@@ -271,6 +271,11 @@ final class Missed_Schedule_Post_Publisher {
     }
 
     private function handle_settings_update() {
+
+        if ( ! current_user_can( 'manage_options' ) ) {
+            return;
+        }
+
         if (
             !isset($_POST['mspp_nonce']) ||
             !wp_verify_nonce($_POST['mspp_nonce'], 'mspp_settings_update')

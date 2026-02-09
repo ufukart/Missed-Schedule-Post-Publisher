@@ -2,10 +2,10 @@
 Contributors: ufukart
 Donate link: https://www.paypal.com/donate/?business=53EHQKQ3T87J8&no_recurring=0&currency_code=USD
 Tags: schedule, missed schedule, trigger, missed scheduled post, cron
-Requires at least: 5.0
+Requires at least: 5.3
 Tested up to: 6.9.1
 Requires PHP: 7.0
-Stable tag: 2.0
+Stable tag: 2.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -220,6 +220,20 @@ For support, feature requests, or bug reports, please visit the [WordPress.org s
 ---
 
 == Changelog ==
+
+= 2.1 =
+🔒 Security
+Fixed a security issue where admin settings could be updated before capability checks.
+Capability (manage_options) validation is now performed before processing POST requests.
+Added additional hardening to prevent unauthorized settings updates.
+
+⏰ Bug Fixes
+Fixed an incorrect timezone calculation that caused double GMT offset conversion in admin UI.
+Replaced manual date offset logic with WordPress-native time handling for accurate timezone and DST support.
+
+🧩 Improvements
+Improved admin page logic for safer and more predictable settings handling.
+Internal code cleanup to better align with WordPress coding and security best practices.
 
 = 2.0 =
 * **New:** Added support for all public Custom Post Types (CPT), WooCommerce products, and Events.
