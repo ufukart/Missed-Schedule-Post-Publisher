@@ -151,7 +151,8 @@ final class Missed_Schedule_Post_Publisher {
 		try {
 			global $wpdb;
 
-			$now = current_time('mysql', true); // GMT
+			// Tolerate 5 minute delay in post publication
+			$now = gmdate('Y-m-d H:i:s', strtotime( '-6 minutes' ) );
 
 			// (post, page, product, event vb.)
 			$args = [
